@@ -1032,6 +1032,11 @@
     eslint-plugin-react-native "3.6.0"
     prettier "1.16.4"
 
+"@react-native-community/slider@^2.0.8":
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/@react-native-community/slider/-/slider-2.0.8.tgz#c4a3c342638270e0adc942b51427ec17104a786d"
+  integrity sha512-FZC3wjYzHQiD7jT7ALy3QNccyLj9zQBRiKGBFr/QvrWLkVg5orpIJ53aYFXm3eOkNvUV+wjhoI9uCkh3LCN2+A==
+
 "@react-native-firebase/app-types@6.3.4":
   version "6.3.4"
   resolved "https://registry.yarnpkg.com/@react-native-firebase/app-types/-/app-types-6.3.4.tgz#e54a3de33455417db63a7b1de2b7795af1c25cae"
@@ -1140,6 +1145,14 @@
     "@types/react" "*"
     "@types/react-native" "*"
     "@types/xdate" "*"
+
+"@types/react-native-text-input-mask@^0.7.3":
+  version "0.7.3"
+  resolved "https://registry.yarnpkg.com/@types/react-native-text-input-mask/-/react-native-text-input-mask-0.7.3.tgz#5857ffe7c0e003826ecac79d139ea45138b8b7bb"
+  integrity sha512-vKXC06lqckCLJvA8PRARDqHbjsLhcMhYzsT958yqbdalHX8fRrlNN8rL6nrALo3ZGK/A1X7tnLHKwhVcZVL6SQ==
+  dependencies:
+    "@types/react" "*"
+    "@types/react-native" "*"
 
 "@types/react-native@*", "@types/react-native@^0.61.17":
   version "0.61.17"
@@ -5908,6 +5921,14 @@ react-native-calendars@^1.263.0:
     prop-types "^15.5.10"
     xdate "^0.8.0"
 
+react-native-color-picker@^0.5.2:
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/react-native-color-picker/-/react-native-color-picker-0.5.2.tgz#659e8e97330db2d8778d4fcd2fe922f52e420d3c"
+  integrity sha512-Gboev/3/Bj8dVlqmf1eVGbxpFq4O+pz35jUKp/PWnC/e3R+VN+hiaxhuOr8BRLGTleOtj2Mu4yNMqHTfghJTfQ==
+  dependencies:
+    prop-types "^15.5.10"
+    tinycolor2 "^1.4.1"
+
 react-native-drawer@2.5.1:
   version "2.5.1"
   resolved "https://registry.yarnpkg.com/react-native-drawer/-/react-native-drawer-2.5.1.tgz#08b9314184f48c724f1b467f8859797369798654"
@@ -5935,6 +5956,11 @@ react-native-keyboard-aware-scroll-view@0.9.1:
   dependencies:
     prop-types "^15.6.2"
     react-native-iphone-x-helper "^1.0.3"
+
+react-native-text-input-mask@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-text-input-mask/-/react-native-text-input-mask-2.0.0.tgz#9cb793e764355d9282d92ea5231d8030a7ca5692"
+  integrity sha512-kP8gURb1+6iR6CxfUx802f4ja9Jzer76hY1w0cjaCVsfbbzyykYIAANTnlxbmFFv/8pQl4NTm1CbQqkg0Cp/gA==
 
 react-native-vector-icons@^6.6.0:
   version "6.6.0"
@@ -6958,6 +6984,11 @@ timed-out@^4.0.0:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/timed-out/-/timed-out-4.0.1.tgz#f32eacac5a175bea25d7fab565ab3ed8741ef56f"
   integrity sha1-8y6srFoXW+ol1/q1Zas+2HQe9W8=
+
+tinycolor2@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/tinycolor2/-/tinycolor2-1.4.1.tgz#f4fad333447bc0b07d4dc8e9209d8f39a8ac77e8"
+  integrity sha1-9PrTM0R7wLB9TcjpIJ2POaisd+g=
 
 tmp@^0.0.33:
   version "0.0.33"
