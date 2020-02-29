@@ -6,4 +6,4 @@ export interface IEvent {
   name: string
 };
 
-export const Client = new Collection(Collections.events);
+export const Event = new Collection(Collections.events);

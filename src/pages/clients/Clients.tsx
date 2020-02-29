@@ -14,9 +14,10 @@ import {
 import { useCollections } from "../../collections-module/Collection.hook";
 import { IClient, Client } from "../../models/Client.model";
 import Collections from "../../utils/collections.constants";
-import { StyleSheet, Alert } from "react-native";
+import { StyleSheet } from "react-native";
 import NumberToMoney from "../../components/number-format/NumberFormat";
 import ClientEdit from "./ClientEdit";
+import { Event } from "../../models/Event.model";
 import Modal from "../../components/modal/Modal";
 
 const Schedule = () => {
@@ -25,15 +26,24 @@ const Schedule = () => {
 
   function changeClientEdit(obj: Partial<IClient>) {
     setClientEdit({ ...(clientEdit as IClient), ...obj });
-  };
+  }
 
   async function onSave() {
-    if (clientEdit && clientEdit) {
+    if (clientEdit) {
       const { id, ...rest } = clientEdit;
       await Client.update(id, rest);
     } else if (clientEdit) {
       await Client.add(clientEdit);
     }
+    setClientEdit(null);
+  }
+
+  async function onRemove() {
+    if (!clientEdit) return;
+    await Client.remove(clientEdit.id);
+    await Event.removeMultiples([
+      { key: "client_id", operation: "==", value: clientEdit.id }
+    ]);
     setClientEdit(null);
   }
 
@@ -80,6 +90,7 @@ const Schedule = () => {
         <ClientEdit
           client={clientEdit as IClient}
           onChange={changeClientEdit}
+          onRemove={onRemove}
         />
       </Modal>
     </>

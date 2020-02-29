@@ -26,16 +26,39 @@ export class Collection<T> {
     return docs.map(doc => ({ id: doc.id, ...doc.data() }));
   }
 
-  add(item: T) {
-    return this._collection.add(item);
+  async add(item: T) {
+    return await this._collection.add(item);
   }
 
-  update(id: string, item: Partial<T>) {
-    return this._collection.doc(id).set(item, { merge: true });
+  async update(id: string, item: Partial<T>) {
+    return await this._collection.doc(id).set(item, { merge: true });
   }
 
   async get(id: string) {
     const document = await this._collection.doc(id).get()
     return { id, ...document.data() };
+  }
+
+  async removeMultiples(queries: WhereQuery[] = []) {
+
+    let consult = this._collection;
+    for (const query of queries) {
+      console.log(query)
+      consult = consult.where(query.key, query.operation, query.value) as FirebaseFirestoreTypes.CollectionReference;
+    };
+
+    const snapshot = await consult.get();
+    const batch = db.batch();
+    console.log(snapshot.docs);
+    snapshot.docs.forEach(doc => {
+      console.log(doc)
+      batch.delete(doc.ref);
+    });
+
+    return await batch.commit();
+  }
+
+  async remove(id: string) {
+    return await this._collection.doc(id).delete();
   }
 }
