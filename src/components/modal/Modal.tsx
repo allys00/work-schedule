@@ -14,6 +14,7 @@ import {
 interface IProps extends ModalProps {
   title: string;
   iconRight?: NativeBase.Icon;
+  onRightClick?(): void;
   children?: Element;
   onClose(): void;
 }
@@ -23,6 +24,7 @@ const Modal = ({
   children,
   title,
   onClose,
+  onRightClick = () => {},
   ...modalProps
 }: IProps) => (
   <ModalWrapper {...modalProps}>
@@ -37,7 +39,9 @@ const Modal = ({
       </Body>
 
       <Right>
-        <Button transparent>{iconRight && <Icon {...iconRight} />}</Button>
+        <Button onPress={onRightClick} transparent>
+          {iconRight && <Icon {...iconRight} />}
+        </Button>
       </Right>
     </Header>
     {children}

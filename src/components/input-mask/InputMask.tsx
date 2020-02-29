@@ -10,11 +10,13 @@ interface IProps extends TextInputMaskProps {
   styleView?: any;
 }
 
-const InputMask = ({ label, styleView, ...inputProps }: IProps) => (
-  <View style={{ ...styles.inputMask, ...styleView }}>
-    <Label style={styles.label}>{label}</Label>
-    <TextInputMask {...inputProps} />
-  </View>
+const InputMask = React.forwardRef(
+  ({ label, styleView, ...inputProps }: IProps, ref) => (
+    <View style={{ ...styles.inputMask, ...styleView }}>
+      <Label style={styles.label}>{label}</Label>
+      <TextInputMask {...inputProps} ref={ref as any} />
+    </View>
+  )
 );
 
 export default InputMask;

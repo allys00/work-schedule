@@ -1,3 +1,4 @@
+import firestore from '@react-native-firebase/firestore';
 import { Platform } from 'react-native';
 import firebase from '@react-native-firebase/app';
 
@@ -30,6 +31,7 @@ const androidConfig = {
 };
 
 const config = Platform.OS === 'ios' ? iosConfig : androidConfig
-
-firebase.initializeApp(config);
-var db = firebase.firestore();
+if (!firebase.apps.length) {
+  firebase.initializeApp(config);
+}
+export const db = firestore();

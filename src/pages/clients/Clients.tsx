@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Content,
   List,
@@ -11,8 +11,8 @@ import {
   Fab,
   Icon
 } from "native-base";
-import { useCollections } from "../../hooks/Collections.hook";
-import { IClient } from "../../models/Client.interface";
+import { useCollections } from "../../collections-module/Collection.hook";
+import { IClient, Client } from "../../models/Client.model";
 import Collections from "../../utils/collections.constants";
 import { StyleSheet, Alert } from "react-native";
 import NumberToMoney from "../../components/number-format/NumberFormat";
@@ -20,17 +20,33 @@ import ClientEdit from "./ClientEdit";
 import Modal from "../../components/modal/Modal";
 
 const Schedule = () => {
-  const { items: clients, loading } = useCollections<IClient>(
-    Collections.clients
-  );
+  const { items: clients } = useCollections<IClient>(Collections.clients);
   const [clientEdit, setClientEdit] = useState<IClient | null>(null);
+
+  function changeClientEdit(obj: Partial<IClient>) {
+    setClientEdit({ ...(clientEdit as IClient), ...obj });
+  };
+
+  async function onSave() {
+    if (clientEdit && clientEdit) {
+      const { id, ...rest } = clientEdit;
+      await Client.update(id, rest);
+    } else if (clientEdit) {
+      await Client.add(clientEdit);
+    }
+    setClientEdit(null);
+  }
 
   return (
     <>
       <Content>
         <List>
           {clients.map(client => (
-            <ListItem avatar key={client.id}>
+            <ListItem
+              avatar
+              key={client.id}
+              onPress={() => setClientEdit(client)}
+            >
               <Left>
                 <View
                   style={{
@@ -55,12 +71,16 @@ const Schedule = () => {
         <Icon type="AntDesign" name="plus" />
       </Fab>
       <Modal
-        title="Clientes"
+        title={"Cliente"}
         visible={Boolean(clientEdit)}
         iconRight={{ name: "save", type: "FontAwesome5" }}
+        onRightClick={onSave}
         onClose={() => setClientEdit(null)}
       >
-        <ClientEdit />
+        <ClientEdit
+          client={clientEdit as IClient}
+          onChange={changeClientEdit}
+        />
       </Modal>
     </>
   );

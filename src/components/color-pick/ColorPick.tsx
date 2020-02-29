@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 import {
   ColorPicker as ColorPickerWrapper,
@@ -8,16 +8,18 @@ import {
 
 interface IProps {
   onColorChange(color: string): void;
+  defaultColor: string;
   style?: any;
 }
-const ColorPicker = ({ onColorChange, style = {} }: IProps) => {
+const ColorPicker = ({ onColorChange, defaultColor, style = {} }: IProps) => {
   return (
     <View style={{ ...styles.colorPicker, ...style }}>
       <ColorPickerWrapper
         onColorChange={color => onColorChange(fromHsv(color))}
         style={{ flex: 1 }}
         hideSliders={true}
-        {...{} as IHoloPicker}
+        defaultColor={defaultColor}
+        {...({} as IHoloPicker)}
       />
     </View>
   );

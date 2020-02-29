@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Calendar } from "react-native-calendars";
 import { Content } from "native-base";
-import { useCollections } from "../../hooks/Collections.hook";
-import { IEvent } from "../../models/Event.interface";
+import { useCollections } from "../../collections-module/Collection.hook";
+import { IEvent } from "../../models/Event.model";
 import Collections from "../../utils/collections.constants";
 
 const Schedule = () => {
