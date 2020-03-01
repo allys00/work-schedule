@@ -19,6 +19,8 @@ import NumberToMoney from "../../components/number-format/NumberFormat";
 import ClientEdit from "./ClientEdit";
 import { Event } from "../../models/Event.model";
 import Modal from "../../components/modal/Modal";
+import Header from "../../components/header/Header";
+import ClientCard from "../../components/client-card/ClientCard";
 
 const Schedule = () => {
   const { items: clients } = useCollections<IClient>(Collections.clients);
@@ -49,6 +51,7 @@ const Schedule = () => {
 
   return (
     <>
+      <Header hasTabs title="Clientes" />
       <Content>
         <List>
           {clients.map(client => (
@@ -57,21 +60,7 @@ const Schedule = () => {
               key={client.id}
               onPress={() => setClientEdit(client)}
             >
-              <Left>
-                <View
-                  style={{
-                    ...style.avatar,
-                    backgroundColor: client.color
-                  }}
-                />
-              </Left>
-              <Body>
-                <Text>{client.name}</Text>
-                <Text note>{`${client.startAt} ás ${client.endAt}`}</Text>
-              </Body>
-              <Right>
-                <NumberToMoney value={client.value} />
-              </Right>
+              <ClientCard {...client} />
             </ListItem>
           ))}
         </List>
@@ -96,14 +85,5 @@ const Schedule = () => {
     </>
   );
 };
-
-const style = StyleSheet.create({
-  avatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 50,
-    overflow: "hidden"
-  }
-});
 
 export default Schedule;

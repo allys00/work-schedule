@@ -1,12 +1,9 @@
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import Collections from '../utils/collections.constants';
 import { db } from '../config/firebase.config';
+import { WhereQuery } from './Collection.hook';
 
-export interface WhereQuery {
-  key: string,
-  operation: FirebaseFirestoreTypes.WhereFilterOp,
-  value: any
-}
+
 
 export class Collection<T> {
 
@@ -40,18 +37,14 @@ export class Collection<T> {
   }
 
   async removeMultiples(queries: WhereQuery[] = []) {
-
     let consult = this._collection;
     for (const query of queries) {
-      console.log(query)
       consult = consult.where(query.key, query.operation, query.value) as FirebaseFirestoreTypes.CollectionReference;
     };
 
     const snapshot = await consult.get();
     const batch = db.batch();
-    console.log(snapshot.docs);
     snapshot.docs.forEach(doc => {
-      console.log(doc)
       batch.delete(doc.ref);
     });
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Container,
   Header,
@@ -11,41 +11,37 @@ import {
 import Schedule from "./pages/schedule/Schedule";
 import Clients from "./pages/clients/Clients";
 
-
 const App = () => {
   return (
-    <Container>
-      <Header hasTabs />
-      <Tabs tabBarPosition="bottom">
-        <Tab
-          heading={
-            <TabHeading>
-              <Icon type="FontAwesome" name="calendar" />
-            </TabHeading>
-          }
-        >
-          <Schedule />
-        </Tab>
-        <Tab
-          heading={
-            <TabHeading>
-              <Icon type="FontAwesome" name="hospital-o" />
-            </TabHeading>
-          }
-        >
-          <Clients />
-        </Tab>
-        <Tab
-          heading={
-            <TabHeading>
-              <Icon type="Entypo" name="bar-graph" />
-            </TabHeading>
-          }
-        >
-          <Text>No Icon</Text>
-        </Tab>
-      </Tabs>
-    </Container>
+    <Tabs tabBarPosition="bottom">
+      <Tab
+        heading={
+          <TabHeading>
+            <Icon type="FontAwesome" name="calendar" />
+          </TabHeading>
+        }
+      >
+        <Schedule />
+      </Tab>
+      <Tab
+        heading={
+          <TabHeading>
+            <Icon type="FontAwesome" name="hospital-o" />
+          </TabHeading>
+        }
+      >
+        <Clients />
+      </Tab>
+      <Tab
+        heading={
+          <TabHeading>
+            <Icon type="Entypo" name="bar-graph" />
+          </TabHeading>
+        }
+      >
+        <Text>No Icon</Text>
+      </Tab>
+    </Tabs>
   );
 };
 

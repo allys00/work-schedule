@@ -1,7 +1,6 @@
 import React from "react";
 import { Modal as ModalWrapper, Alert, ModalProps } from "react-native";
 import {
-  Header,
   Left,
   Button,
   Icon,
@@ -10,13 +9,14 @@ import {
   Right,
   NativeBase
 } from "native-base";
+import Header from "../header/Header";
 
 interface IProps extends ModalProps {
   title: string;
   iconRight?: NativeBase.Icon;
   onRightClick?(): void;
-  children?: Element;
   onClose(): void;
+  children?: Element;
 }
 
 const Modal = ({
@@ -28,22 +28,13 @@ const Modal = ({
   ...modalProps
 }: IProps) => (
   <ModalWrapper {...modalProps}>
-    <Header>
-      <Left>
-        <Button transparent onPress={onClose}>
-          <Icon name="close" />
-        </Button>
-      </Left>
-      <Body>
-        <Title>{title}</Title>
-      </Body>
-
-      <Right>
-        <Button onPress={onRightClick} transparent>
-          {iconRight && <Icon {...iconRight} />}
-        </Button>
-      </Right>
-    </Header>
+    <Header
+      iconLeft={{ name: "close" }}
+      onLeftClick={onClose}
+      title={title}
+      onRightClick={onRightClick}
+      iconRight={iconRight}
+    />
     {children}
   </ModalWrapper>
 );
