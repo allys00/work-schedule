@@ -18,15 +18,18 @@ interface IMarked {
 }
 
 const Schedule = () => {
-  const query = (month: number): WhereQuery[] => [
-    { key: "date", operation: ">=", value: getRangeMonth(month).startAt },
-    { key: "date", operation: "<=", value: getRangeMonth(month).endAt }
-  ];
   const [month, setMonth] = useState(getMonth(new Date()));
 
+  const query = useMemo<WhereQuery[]>(() => {
+    return [
+      { key: "date", operation: ">=", value: getRangeMonth(month).startAt },
+      { key: "date", operation: "<=", value: getRangeMonth(month).endAt }
+    ];
+  }, [month]);
+  console.log(query)
   const { items: events, loading, onRefresh } = useCollections<IEvent>(
     Collections.events,
-    query(month)
+    query
   );
   const { items: clients } = useCollections<IClient>(Collections.clients);
 
@@ -34,16 +37,19 @@ const Schedule = () => {
     onRefresh();
   }, [month]);
 
-  const mapClient = (event: IEvent): IClient =>
-    clients.find(client => client.id === event.client_id) || ({} as IClient);
+  const eventsWithClient = useMemo<IEvent[]>(() => {
+    return events.map(event => ({
+      ...event,
+      fullClient:
+        clients.find(client => client.id === event.client_id) || ({} as IClient)
+    }));
+  }, [events, clients]);
 
   const markedDates = useMemo<IMarked>(() => {
     let dates: IMarked = {};
-    for (const event of events) {
+    for (const event of eventsWithClient) {
       const stringDate = dateView(event.date, "yyy-MM-dd");
-      const client = mapClient(event);
-      if (!client.id) break;
-      const dot = { key: event.id, color: client.color };
+      const dot = { key: event.id, color: event.fullClient.color };
       if (dates[stringDate]) {
         dates[stringDate].dots.push(dot);
       } else {
@@ -51,21 +57,25 @@ const Schedule = () => {
       }
     }
     return dates;
-  }, [events, clients]);
+  }, [eventsWithClient]);
 
   const clientsToday = useMemo<IClient[]>(() => {
-    if (!events.length || !clients.length) return [];
-    return events.filter(event => isToday(event.date.toDate())).map(mapClient);
-  }, [events, clients]);
+    if (!eventsWithClient.length) return [];
+    return eventsWithClient
+      .filter(event => isToday(event.date.toDate()))
+      .map(event => event.fullClient);
+  }, [eventsWithClient]);
 
   const clientsThisMonth = useMemo<IClient[]>(() => {
-    if (!events.length || !clients.length) return [];
-    const clientsFiltered = events
+    if (!eventsWithClient.length) return [];
+    const clientsFiltered = eventsWithClient
       .filter(event => isThisMonth(event.date.toDate()))
-      .map(mapClient);
+      .map(event => event.fullClient);
 
     return [...new Set(clientsFiltered)];
-  }, [events, clients]);
+  }, [eventsWithClient]);
+
+  console.log(events);
 
   return (
     <>
