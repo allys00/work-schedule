@@ -9,7 +9,7 @@ export const getRangeMonth = (month: number) => {
   const date = new Date()
   return {
     startAt: set(date, { month, date: 1, hours: 0, minutes: 0, seconds: -1 }),
-    endAt: set(date, { month: month + 1, hours: 0, minutes: 0, seconds: -1 }),
+    endAt: set(date, { month: month + 1, date: 0, hours: 0, minutes: 0, seconds: -1 }),
   }
 }
 
