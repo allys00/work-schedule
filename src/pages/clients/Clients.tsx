@@ -9,7 +9,8 @@ import {
   Right,
   View,
   Fab,
-  Icon
+  Icon,
+  Toast
 } from "native-base";
 import { useCollections } from "../../collections-module/Collection.hook";
 import { IClient, Client } from "../../models/Client.model";
@@ -20,24 +21,58 @@ import ClientEdit from "./ClientEdit";
 import { Event } from "../../models/Event.model";
 import Modal from "../../components/modal/Modal";
 import Header from "../../components/header/Header";
-import ClientCard from "../../components/client-card/ClientCard";
+import ClientList from "./ClientList";
+import { RouterEnum } from "../../App";
 
-const Schedule = () => {
+const Schedule = ({ route, navigation }: any) => {
   const { items: clients } = useCollections<IClient>(Collections.clients);
   const [clientEdit, setClientEdit] = useState<IClient | null>(null);
+  const [scheduleDays, setScheduleDays] = useState<[] | null>(null);
+
+  useEffect(() => {
+    if (route?.params?.days) {
+      navigation.navigate(RouterEnum.Clients, {
+        days: null
+      });
+      setClientEdit({} as IClient);
+      setScheduleDays(route.params.days);
+    }
+  });
 
   function changeClientEdit(obj: Partial<IClient>) {
     setClientEdit({ ...(clientEdit as IClient), ...obj });
   }
 
+  const cleanClientEdit = () => {
+    setClientEdit(null);
+    setScheduleDays(null);
+  };
+
   async function onSave() {
-    if (clientEdit) {
+    if (clientEdit?.id) {
       const { id, ...rest } = clientEdit;
       await Client.update(id, rest);
+      Toast.show({
+        text: "Cliente atualizado com Sucesso",
+        type: "success"
+      });
     } else if (clientEdit) {
       await Client.add(clientEdit);
+
+      if (scheduleDays) {
+        navigation.navigate(RouterEnum.Schedule, { scheduleDays });
+        Toast.show({
+          text: "Cliente e Evento cadastrado com Sucesso",
+          type: "success"
+        });
+      } else {
+        Toast.show({
+          text: "Cliente cadastrado com Sucesso",
+          type: "success"
+        });
+      }
     }
-    setClientEdit(null);
+    cleanClientEdit();
   }
 
   async function onRemove() {
@@ -46,24 +81,18 @@ const Schedule = () => {
     await Event.removeMultiples([
       { key: "client_id", operation: "==", value: clientEdit.id }
     ]);
-    setClientEdit(null);
+    cleanClientEdit();
   }
 
   return (
     <>
       <Header hasTabs title="Clientes" />
-      <Content>
-        <List>
-          {clients.map(client => (
-            <ListItem
-              avatar
-              key={client.id}
-              onPress={() => setClientEdit(client)}
-            >
-              <ClientCard {...client} />
-            </ListItem>
-          ))}
-        </List>
+      <Content style={{ backgroundColor: "#fff" }}>
+        <ClientList
+          clients={clients}
+          onPress={setClientEdit}
+          emptyMsg="Crie o seu primeiro Cliente"
+        />
       </Content>
 
       <Fab position="bottomRight" onPress={() => setClientEdit({} as IClient)}>
@@ -71,10 +100,10 @@ const Schedule = () => {
       </Fab>
       <Modal
         title={"Cliente"}
-        visible={Boolean(clientEdit)}
+        isVisible={Boolean(clientEdit)}
         iconRight={{ name: "save", type: "FontAwesome5" }}
         onRightClick={onSave}
-        onClose={() => setClientEdit(null)}
+        onClose={cleanClientEdit}
       >
         <ClientEdit
           client={clientEdit as IClient}

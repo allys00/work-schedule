@@ -1,5 +1,6 @@
 import React from "react";
-import { Modal as ModalWrapper, Alert, ModalProps } from "react-native";
+import ModalWrapper, { ReactNativeModal, ModalProps } from "react-native-modal";
+
 import {
   Left,
   Button,
@@ -7,16 +8,22 @@ import {
   Body,
   Title,
   Right,
-  NativeBase
+  NativeBase,
+  View
 } from "native-base";
 import Header from "../header/Header";
+import { StyleSheet, Dimensions } from "react-native";
 
-interface IProps extends ModalProps {
-  title: string;
+const deviceWidth = Dimensions.get("window").width;
+const deviceHeight = Dimensions.get("window").height;
+
+interface IProps {
+  title?: string;
   iconRight?: NativeBase.Icon;
   onRightClick?(): void;
   onClose(): void;
-  children?: Element;
+  children: Element;
+  isVisible: boolean;
 }
 
 const Modal = ({
@@ -24,10 +31,20 @@ const Modal = ({
   children,
   title,
   onClose,
-  onRightClick = () => {},
-  ...modalProps
+  isVisible,
+  onRightClick = () => {}
 }: IProps) => (
-  <ModalWrapper {...modalProps}>
+  <ModalWrapper
+    animationIn="slideInUp"
+    animationOut="slideOutDown"
+    hideModalContentWhileAnimating={true}
+    isVisible={isVisible}
+    style={styles.modal}
+    deviceWidth={deviceWidth}
+    deviceHeight={deviceHeight}
+    onBackButtonPress={onClose}
+    onBackdropPress={onClose}
+  >
     <Header
       iconLeft={{ name: "close" }}
       onLeftClick={onClose}
@@ -35,8 +52,16 @@ const Modal = ({
       onRightClick={onRightClick}
       iconRight={iconRight}
     />
-    {children}
+    <View style={{ flex: 1 }}>{children}</View>
   </ModalWrapper>
 );
+
+const styles = StyleSheet.create({
+  modal: {
+    backgroundColor: "#fff",
+    maxHeight: deviceHeight - 100,
+    marginTop: 50
+  }
+});
 
 export default Modal;

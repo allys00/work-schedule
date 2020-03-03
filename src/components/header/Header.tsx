@@ -37,7 +37,6 @@ const Header = ({
     <Body>
       <Title>{title}</Title>
     </Body>
-
     <Right>
       <Button onPress={onRightClick} transparent>
         {iconRight && <Icon {...iconRight} />}
