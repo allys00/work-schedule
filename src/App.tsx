@@ -5,6 +5,7 @@ import Schedule from "./pages/schedule/Schedule";
 import Clients from "./pages/clients/Clients";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Reports from "./pages/reports/Reports";
 
 const Tab = createBottomTabNavigator();
 
@@ -42,7 +43,7 @@ const App = () => {
         >
           <Tab.Screen name={RouterEnum.Schedule} component={Schedule} />
           <Tab.Screen name={RouterEnum.Clients} component={Clients} />
-          <Tab.Screen name={RouterEnum.Reports} component={Clients} />
+          <Tab.Screen name={RouterEnum.Reports} component={Reports} />
         </Tab.Navigator>
       </NavigationContainer>
     </Root>
