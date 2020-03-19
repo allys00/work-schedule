@@ -1,23 +1,26 @@
 import React, { useMemo, useEffect, useState } from "react";
-import { Calendar, MultiDotMarking } from "react-native-calendars";
-import { Content, Spinner } from "native-base";
+import { Calendar, MultiDotMarking, DateObject } from "react-native-calendars";
+import { Content } from "native-base";
 import {
   useCollections,
   WhereQuery
 } from "../../collections-module/Collection.hook";
-import { IEvent } from "../../models/Event.model";
+import { IEvent, Event } from "../../models/Event.model";
 import Collections from "../../utils/collections.constants";
 import Header from "../../components/header/Header";
 import { dateView, getRangeMonth } from "../../utils/moment.functions";
 import { IClient } from "../../models/Client.model";
-import { isToday, isThisMonth, getMonth } from "date-fns";
-import ScheduleList from "./schedule-list/ScheduleList";
+import { isToday, isThisMonth, getMonth, toDate } from "date-fns";
+import ClientList from "../clients/ClientList";
+import Modal from "../../components/modal/Modal";
+import { Alert } from "react-native";
+import { RouterEnum } from "../../App";
 
 interface IMarked {
   [date: string]: MultiDotMarking;
 }
 
-const Schedule = () => {
+const Schedule = ({ navigation, route }: any) => {
   const [month, setMonth] = useState(getMonth(new Date()));
 
   const query = useMemo<WhereQuery[]>(() => {
@@ -26,16 +29,27 @@ const Schedule = () => {
       { key: "date", operation: "<=", value: getRangeMonth(month).endAt }
     ];
   }, [month]);
-  console.log(query)
   const { items: events, loading, onRefresh } = useCollections<IEvent>(
     Collections.events,
     query
   );
   const { items: clients } = useCollections<IClient>(Collections.clients);
 
+  const [days, setDays] = useState<Date[]>([]);
+  const [createLoading, setCreateLoading] = useState<boolean>(false);
+
   useEffect(() => {
     onRefresh();
   }, [month]);
+
+  useEffect(() => {
+    if (route?.params?.scheduleDays && clients[0].id) {
+      navigation.navigate(RouterEnum.Schedule, {
+        scheduleDays: null
+      });
+      createEvents(clients[0].id, route.params.scheduleDays);
+    }
+  });
 
   const eventsWithClient = useMemo<IEvent[]>(() => {
     return events.map(event => ({
@@ -75,29 +89,67 @@ const Schedule = () => {
     return [...new Set(clientsFiltered)];
   }, [eventsWithClient]);
 
-  console.log(events);
+  const createEvents = async (client_id: string, days: Date[]) => {
+    setCreateLoading(true);
+    try {
+      for (const day of days) {
+        await Event.add({ client_id, date: day });
+      }
+      setDays([]);
+    } catch (error) {
+    } finally {
+      setCreateLoading(false);
+    }
+  };
+
+  const onDayPress = ({ timestamp }: DateObject) => {
+    if (clients.length) {
+      setDays([toDate(timestamp)]);
+    } else {
+      Alert.alert(
+        "Você não possui clientes",
+        "Deseja cadastrar seu primeiro cliente?",
+        [
+          { text: "Depois", style: "cancel" },
+          {
+            text: "Cadastrar cliente",
+            onPress: () =>
+              navigation.navigate(RouterEnum.Clients, { days: [toDate(timestamp)] })
+          }
+        ]
+      );
+    }
+  };
 
   return (
     <>
       <Header hasTabs title="Agenda" />
-      <Content>
+      <Content style={{ backgroundColor: "#fff" }}>
         <Calendar
           hideExtraDays={true}
+          onDayPress={onDayPress}
           onMonthChange={({ month }) => setMonth(month - 1)}
           markedDates={markedDates}
           markingType={"multi-dot"}
         />
-        {loading ? (
-          <Spinner color="#888" style={{ marginTop: 100 }} />
-        ) : (
-          <>
-            <ScheduleList clients={clientsToday} title="Eventos Hoje" />
-            <ScheduleList
-              clients={clientsThisMonth}
-              title="Clientes este mês"
-            />
-          </>
-        )}
+        <ClientList
+          loading={loading}
+          clients={clientsToday}
+          title="Eventos Hoje"
+        />
+        <ClientList
+          loading={loading}
+          clients={clientsThisMonth}
+          title="Clientes este mês"
+        />
+        <Modal onClose={() => setDays([])} isVisible={Boolean(days.length)}>
+          <ClientList
+            clients={clients}
+            title="Escolha o Cliente"
+            onPress={client => createEvents(client.id, days)}
+            loading={createLoading}
+          />
+        </Modal>
       </Content>
     </>
   );

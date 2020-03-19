@@ -1,4 +1,4 @@
-import React, { useEffect,  RefObject } from "react";
+import React, { useEffect, RefObject } from "react";
 import { Form, Content, Label, View, Fab, Icon } from "native-base";
 import ColorPicker from "../../components/color-pick/ColorPick";
 import { StyleSheet, TextInput, Alert } from "react-native";
@@ -21,10 +21,10 @@ const ClientEdit = ({ client, onChange, onRemove }: Props) => {
   const descriptionRef = React.createRef<InputRef>();
 
   useEffect(() => {
-    if (!client.color) {
+    if (client && !client.color) {
       onChange({ color: "#ff0000" });
     }
-  }, [client.color]);
+  }, [client?.color]);
 
   function goToInput(inputElement: RefObject<InputRef>) {
     if (inputElement.current && inputElement.current.input) {
@@ -47,6 +47,7 @@ const ClientEdit = ({ client, onChange, onRemove }: Props) => {
     );
   }
 
+  if (!client) return null;
   return (
     <>
       <Content>
@@ -123,7 +124,7 @@ const ClientEdit = ({ client, onChange, onRemove }: Props) => {
           </Label>
           <ColorPicker
             onColorChange={color => onChange({ color })}
-            defaultColor="#ff0000"
+            defaultColor={client.color}
           />
         </Form>
       </Content>
