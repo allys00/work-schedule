@@ -8,7 +8,7 @@ import {
 import { IEvent, Event } from "../../models/Event.model";
 import Collections from "../../utils/collections.constants";
 import Header from "../../components/header/Header";
-import { dateView, getRangeMonth } from "../../utils/moment.functions";
+import { timestampView, getRangeMonth } from "../../utils/moment.functions";
 import { IClient } from "../../models/Client.model";
 import { isToday, isThisMonth, getMonth, toDate } from "date-fns";
 import ClientList from "../clients/ClientList";
@@ -62,7 +62,7 @@ const Schedule = ({ navigation, route }: any) => {
   const markedDates = useMemo<IMarked>(() => {
     let dates: IMarked = {};
     for (const event of eventsWithClient) {
-      const stringDate = dateView(event.date, "yyy-MM-dd");
+      const stringDate = timestampView(event.date, "yyy-MM-dd");
       const dot = { key: event.id, color: event.fullClient.color };
       if (dates[stringDate]) {
         dates[stringDate].dots.push(dot);

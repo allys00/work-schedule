@@ -15,8 +15,6 @@ import {
 import { useCollections } from "../../collections-module/Collection.hook";
 import { IClient, Client } from "../../models/Client.model";
 import Collections from "../../utils/collections.constants";
-import { StyleSheet } from "react-native";
-import NumberToMoney from "../../components/number-format/NumberFormat";
 import ClientEdit from "./ClientEdit";
 import { Event } from "../../models/Event.model";
 import Modal from "../../components/modal/Modal";
